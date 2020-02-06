@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<!-- 设置为IUserDao接口方法提供sql语句配置 -->
+<mapper namespace="com.aishang.dao.UserDao">
+
+<!--  查询用户名为？的数量-->
+    <select id="findUserName" resultType="Integer" parameterType="String">
+        select count(0) from user where username=#{userName}
+    </select>
+
+    <!--将用户的数据插入数据库中-->
+    <insert id="addUser" parameterType="User">
+        insert into user values(default,#{userName},#{passWord},#{name},#{email},#{phone},#{addr},#{state},#{code})
+    </insert>
+
+    <!--检查密码是否正确-->
+    <select id="checkPassWord" resultType="Integer" parameterType="User">
+        select count(0) from user where username=#{userName} and password=#{passWord}
+    </select>
+
+    <!--查找用户信息-->
+    <select id="findUser" resultType="User" parameterType="User">
+        select * from user where username=#{userName} and password=#{passWord}
+    </select>
+
+    <!--&lt;!&ndash;修改密码&ndash;&gt;-->
+    <!--<update id="updatePwd" parameterType="User">-->
+        <!--update user set password=#{passWord} where username=#{userName}-->
+    <!--</update>-->
+
+    <!--保存-->
+    <update id="baocun" parameterType="User">
+        update user set password=#{passWord}, email=#{email}, phone=#{phone} ,name=#{name} where username=#{userName}
+    </update>
+</mapper>

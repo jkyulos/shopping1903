@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<!-- 设置为IUserDao接口方法提供sql语句配置 -->
+<mapper namespace="com.aishang.dao.CategoryDao">
+
+    <!--自定义映射规则-->
+    <resultMap id="categoryMap" type="CategoryExt">
+        <!--id:主键 column:数据库字段名 property:po类的成员变量名-->
+        <id column="cid" property="cid"></id>
+        <result column="cname" property="cname"></result>
+        <!--配置集合 ofType:泛型的类型-->
+        <collection property="categorySeconds" ofType="CategorySecond">
+            <id column="csid" property="csid"></id>
+            <result column="csname" property="csname"></result>
+            <result column="cid" property="cid"></result>
+        </collection>
+    </resultMap>
+
+    <!--查询获取一二级类目-->
+    <select id="getAllCategory" resultMap="categoryMap">
+        select * from category inner join categorysecond
+        on category.cid=categorysecond.cid
+    </select>
+</mapper>

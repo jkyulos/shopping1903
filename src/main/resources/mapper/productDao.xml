@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<!-- 设置为IUserDao接口方法提供sql语句配置 -->
+<mapper namespace="com.aishang.dao.ProductDao">
+
+    <resultMap id="productMap" type="Product">
+        <id column="pid" property="pid"></id>
+        <result column="pname" property="pname"></result>
+        <result column="market_price" property="marketprice"></result>
+        <result column="shop_price" property="shopprice"></result>
+        <result column="image" property="image"></result>
+        <result column="pdesc" property="pdesc"></result>
+        <result column="is_hot" property="ishot"></result>
+        <result column="pdate" property="pdate"></result>
+        <result column="csid" property="csid"></result>
+    </resultMap>
+
+    <!--根据二级类目csid查询商品集合-->
+    <select id="getProductByCsid" parameterType="Integer" resultMap="productMap">
+          select * from product where csid=#{csid} limit 6
+    </select>
+
+    <!--复合查询商品分页-->
+    <select id="getProductByPage" parameterType="ProductBean" resultMap="productMap">
+          select product.* from product
+          <if test="cid!=null">
+              inner join categorysecond
+              on product.csid = categorysecond.csid
+          </if>
+          <where>
+              <if test="cid!=null">
+                  and categorysecond.cid=#{cid}
+              </if>
+              <if test="csid!=null">
+                  and product.csid=#{csid}
+              </if>
+              <if test="pName!=null">
+                  and product.pName like "%"#{pName}"%"
+              </if>
+          </where>
+          limit #{start},#{pageSize}
+    </select>
+
+    <!--商品热购-->
+    <select id="getProductisHot" parameterType="ProductBean" resultMap="productMap">
+        select product.* from product
+        <if test="cid!=null">
+            inner join categorysecond
+            on product.csid = categorysecond.csid
+        </if>
+        <where>
+            <if test="cid!=null">
+                and categorysecond.cid=#{cid}
+            </if>
+            <if test="csid!=null">
+                and product.csid=#{csid}
+            </if>
+            <if test="pName!=null">
+                and product.pName like "%"#{pName}"%"
+            </if>
+        </where>
+        and product.is_hot=1
+        limit 3
+    </select>
+
+    <!--查询rowCount-->
+    <select id="getRowCount" parameterType="ProductBean" resultType="Integer">
+        select count(0) from product
+        <if test="cid!=null">
+            inner join categorysecond
+            on product.csid = categorysecond.csid
+        </if>
+        <where>
+            <if test="cid!=null">
+                and categorysecond.cid=#{cid}
+            </if>
+            <if test="csid!=null">
+                and product.csid=#{csid}
+            </if>
+            <if test="pName!=null">
+                and product.pName like "%"#{pName}"%"
+            </if>
+        </where>
+    </select>
+
+    <!--查询商品详情-->
+    <select id="getProductByID" parameterType="Integer" resultMap="productMap">
+        select * from product where pid = #{pid}
+    </select>
+</mapper>
